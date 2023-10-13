@@ -1,8 +1,31 @@
-import { log } from "console"
-import { greet } from "./message/message";
+import express, { Request, Response } from 'express';
+import taskRoute from "./task"
 
-const message:string = "Hello World App"
+const app = express();
+const port = process.env.PORT || 3000;
 
-log(message);
-console.log(greet);
 
+
+app.use(express.json());
+
+
+//Todo add tasks route
+app.use("/tasks",taskRoute)
+
+app.get('/', (req: Request, res: Response) => {
+    res.send('Hello, TypeScript Express!');
+});
+
+app.get('/health',(req:Request, res:Response)=>{
+    res.status(200).jsonp({
+        message:"Health Check done."
+    })
+})
+
+
+
+app.listen(port,()=>{
+    console.log(
+        `Server running under http://localhost${port}`
+    )
+})
