@@ -1,0 +1,1 @@
+export const greet:string = "Hello User by Dev Team";
