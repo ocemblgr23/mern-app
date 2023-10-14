@@ -4,13 +4,15 @@ import { Task } from './models/task';
 const router = Router();
 let tasks: Task[] = [];
 
+
 // Add your CRUD API implementation here
 
 router.post("/",(req:Request,res:Response)=>{
+    const {title,description} = req.body
     const task:Task = {
         id:tasks.length +1,
-        title:req.body.title,
-        description:req.body.description,
+        title,
+        description,
         completed:false
     }
 
