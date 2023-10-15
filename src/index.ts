@@ -4,6 +4,9 @@ import cors from "cors";
 import mongoose,{Schema,model,connect} from "mongoose"
 import dotenv from "dotenv"
 import * as uuid from "uuid"
+import workerRoute from "./routes/worker"
+import {run } from "./config/connection"
+import { errorHandeler } from './config/error-middleware';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -15,42 +18,42 @@ app.use(cors())
 
 //Todo add tasks route
 app.use("/tasks",taskRoute)
-const run = async () =>{
-    try {
-        // @ts-ignore
-        await  mongoose.connect(process.env.MONGOVRENT,{
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log("Connected to Remote DB")
-        console.log(uuid.v4())
-    } catch (e) {
-        console.log(e)
-    }
 
-}
+
+// const run = async () =>{
+//     try {
+//         // @ts-ignore
+//         await  mongoose.connect(process.env.MONGOVRENT,{
+//             useNewUrlParser: true,
+//             useUnifiedTopology: true,
+//         });
+//         console.log("Connected to Remote DB")
+//         console.log(uuid.v4())
+//     } catch (e) {
+//         console.log(e)
+//     }
+
+// }
 // Connect to DB
 run();
 
-// User model
+// User model start here
 interface IUser {
     cname:string;
     age:number;
     profile?:string;
 }
-
+// Create schema
 const userSchema = new Schema<IUser>({
     cname:{type:String},
     age:{type:Number},
     profile:String
 })
-
+// Create a model
 const User = model<IUser>("User",userSchema);
 
-
-
-//
-
+// Todo add worker route
+app.use("/worker",workerRoute)
 
 app.get('/', async (req: Request, res: Response) => {
     const user = new User({
@@ -69,6 +72,7 @@ app.get('/health',(req:Request, res:Response)=>{
 })
 
 
+app.use(errorHandeler);
 
 app.listen(port,()=>{
     console.log(
