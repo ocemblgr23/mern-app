@@ -5,6 +5,7 @@ import mongoose,{Schema,model,connect} from "mongoose"
 import dotenv from "dotenv"
 import * as uuid from "uuid"
 import workerRoute from "./routes/worker"
+import courseRoute from "./routes/course"
 import {run } from "./config/connection"
 import { errorHandeler } from './config/error-middleware';
 
@@ -53,7 +54,8 @@ const userSchema = new Schema<IUser>({
 const User = model<IUser>("User",userSchema);
 
 // Todo add worker route
-app.use("/worker",workerRoute)
+app.use("/worker",workerRoute);
+app.use("/apiv1/course",courseRoute);
 
 app.get('/', async (req: Request, res: Response) => {
     const user = new User({
