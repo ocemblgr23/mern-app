@@ -8,6 +8,7 @@ import workerRoute from "./routes/worker"
 import courseRoute from "./routes/course"
 import {run } from "./config/connection"
 import { errorHandeler } from './config/error-middleware';
+import multer from 'multer';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -16,6 +17,8 @@ const port = process.env.PORT || 3000;
 dotenv.config();
 app.use(express.json());
 app.use(cors())
+
+app.use("/uploads",express.static("uploads"))
 
 //Todo add tasks route
 app.use("/tasks",taskRoute)
@@ -73,11 +76,25 @@ app.get('/health',(req:Request, res:Response)=>{
     })
 })
 
+// File uplaod
+const storage = multer.diskStorage({
+    destination:"./uploads",
+    filename:(req,file,cb)=>{
+        cb(null,Date.now()+"_"+file.originalname)
+    }
+})
+
+// const upload = multer({dest:"uploads/"})
+const upload = multer({storage:storage})
+app.post("/upload",upload.single("image"),(req:Request,res:Response)=>{
+
+res.status(201).jsonp({file:req.file?.filename})
+})
+
 
 app.use(errorHandeler);
 
 app.listen(port,()=>{
-    console.log(
-        `Server running under http://localhost:${port}`
-    )
+    console.log(`Server running under http://localhost:${port}`);
 })
+
