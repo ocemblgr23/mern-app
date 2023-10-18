@@ -84,7 +84,7 @@ router.delete('/:id', async (req: Request, res: Response, next: NextFunction) =>
       return;
     }
     const deleteWorker = await Worker.deleteOne({_id:id});
-    res.status(HTTP_STATUS_CODES.OK).jsonp(deleteWorker);
+    res.status(HTTP_STATUS_CODES.NO_CONTENT).jsonp(deleteWorker);
   } catch (error) {
     next(error)
   }
